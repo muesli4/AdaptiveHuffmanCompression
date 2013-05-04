@@ -19,6 +19,9 @@ public class BitInputStream extends InputStream {
         this.inputStream = inputStream;
     }
 
+    /**
+        Reads the next bit, is not equal 0 if set, otherwise equal 0.
+    */
     public int read() throws IOException {
     
         // if not filled, then read from stream
