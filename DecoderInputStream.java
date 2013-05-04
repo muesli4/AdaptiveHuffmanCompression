@@ -6,7 +6,7 @@ import java.io.IOException;
 public class DecoderInputStream extends InputStream {
 
     // the compressed input (including initial tree represenation) will be received here
-    private InputStream inputStream;
+    private BitInputStream bitInputStream;
 
     // the huffman tree used for decoding
     private PrefixTree prefixTree;
@@ -16,14 +16,14 @@ public class DecoderInputStream extends InputStream {
     */
     public DecoderInputStream(InputStream inputStream) {
     
-        this.inputStream = inputStream;
+        this.bitInputStream = new BitInputStream(inputStream);
         
         // TODO receive the initial prefix tree from inputStream
     }
 
     public int read() throws IOException {
         
-        int ch = this.inputStream.read();
+        int ch = this.bitInputStream.read();
         
         if (ch == -1) {
         
