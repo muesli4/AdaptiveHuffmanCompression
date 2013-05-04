@@ -3,10 +3,15 @@ public class Main {
 
     public static void main(String[] args) {
     
-        EncoderStream encoder = new EncoderStream(new DecoderStream(System.in));
+        // create a manual pipe
+        PipedInputStream is = new PipedInputStream();
+        PipedOutputStream os = new PipedOutputStream(is);
+    
+        // connect both through the pipe
+        EncoderOutputStream encoder = new EncoderOutputStream(os);
+        DecoderInputStream encode = new DecoderInputStream(is);
 
-        // TODO read loop
+        // TODO test
     }
-
 }
 
