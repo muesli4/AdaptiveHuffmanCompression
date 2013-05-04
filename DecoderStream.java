@@ -2,7 +2,7 @@
 import java.io.OutputStream;
 import java.io.InputStream;
 
-public class DecoderStream extends OutputStream {
+public class DecoderStream extends InputStream {
 
     // the compressed input (including initial tree represenation) will be received here
     private InputStream inputStream;

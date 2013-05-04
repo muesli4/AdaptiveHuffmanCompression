@@ -31,7 +31,7 @@ public abstract class PrefixTree {
     }
 
     /**
-        Check whether this tee has a parent.
+        Check whether this tree has a parent.
     */
     public boolean isRoot() {
     
