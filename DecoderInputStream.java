@@ -1,6 +1,7 @@
 
 import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.IOException;
 
 public class DecoderInputStream extends InputStream {
 
@@ -18,6 +19,25 @@ public class DecoderInputStream extends InputStream {
         this.inputStream = inputStream;
         
         // TODO receive the initial prefix tree from inputStream
+    }
+
+    public int read() throws IOException {
+        
+        int ch = this.inputStream.read();
+        
+        if (ch == -1) {
+        
+            return -1;
+        }
+        else {
+
+            // TODO read until found a valid encoding and then decode to symbol
+        
+            // TODO update the tree with the symbol
+            
+            // TODO return decoded symbol
+            return -1;
+        }
     }
 
 }

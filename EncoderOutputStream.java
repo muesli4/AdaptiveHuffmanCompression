@@ -1,6 +1,7 @@
 
 import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.IOException;
 
 public class EncoderOutputStream extends OutputStream {
 
@@ -19,6 +20,17 @@ public class EncoderOutputStream extends OutputStream {
         this.outputStream = outputStream;
         
         // TODO load and send the first tree representation here
+    }
+    
+    
+
+    public void write(int b) throws IOException {
+    
+        // TODO encode symbol to bit sequence
+        
+        // TODO send bit sequence with old encoding
+        
+        // TODO update tree
     }
 }
 
