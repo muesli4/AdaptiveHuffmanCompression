@@ -36,7 +36,7 @@ public class BitInputStream extends InputStream {
                 
                 byteBufferPosition = 1;
                 
-                return byteBuffer | 1;
+                return byteBuffer & 1;
             }
         }
         // read from buffer
@@ -45,7 +45,7 @@ public class BitInputStream extends InputStream {
             int pos = byteBufferPosition;
             byteBufferPosition = byteBufferPosition + 1;
         
-            return byteBuffer | (1 << pos);
+            return byteBuffer & (1 << pos);
         }
     }
 }
