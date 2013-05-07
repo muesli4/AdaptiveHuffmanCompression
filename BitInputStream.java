@@ -2,6 +2,9 @@
 import java.io.InputStream;
 import java.io.IOException;
 
+/**
+    Reads bitwise input from the given bytewise InputStream.
+*/
 public class BitInputStream extends InputStream {
 
     // currently stored bits
@@ -13,7 +16,9 @@ public class BitInputStream extends InputStream {
     // the input stream to read from
     InputStream inputStream;
 
-
+    /**
+        @param inputStream The stream to read from.
+    */
     public BitInputStream(InputStream inputStream) {
     
         this.inputStream = inputStream;

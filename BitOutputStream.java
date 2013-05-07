@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import java.util.BitSet;
 
+/**
+    Writes bitwise output to the given bytewise OutputStream.
+*/
 public class BitOutputStream extends OutputStream {
 
     // currently stored bits
@@ -15,7 +18,9 @@ public class BitOutputStream extends OutputStream {
     // the output stream to write from
     OutputStream outputStream;
 
-
+    /**
+        @param outputStream The stream to write to.
+    */
     public BitOutputStream(OutputStream outputStream) {
     
         this.outputStream = outputStream;
