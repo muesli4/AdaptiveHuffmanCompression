@@ -1,3 +1,5 @@
+import java.util.BitSet;
+
 
 public class Leaf extends PrefixTree {
 
@@ -9,7 +11,23 @@ public class Leaf extends PrefixTree {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public BitSet encode(char ch, BitSet bitSet, int length) {
+		if(value == ch){
+			// the leaf is the one looking for	
+			return bitSet;
+		}
+		else{
+			// the leaf is not the one looking for
+			return null;
+		}
+			
+	}
 
+	@Override
+	public char decode(BitSet bitSet, int position) {
+		return value;
+	}
 
 }
 

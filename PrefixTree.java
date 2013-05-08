@@ -1,3 +1,5 @@
+import java.util.BitSet;
+
 
 public abstract class PrefixTree {
 
@@ -38,5 +40,28 @@ public abstract class PrefixTree {
         return parent == null;
     }
     
+    /**
+     * Encodes the character
+     */
+    public BitSet encode(char ch){
+    	return this.encode(ch, new BitSet(), 0);
+    }
+
+    /**
+     * Adds the next bit to the bitset
+     */
+	public abstract BitSet encode(char ch, BitSet bitSet, int length);
+	
+    /**
+     * Decodes the character
+     */
+    public char decode(BitSet bitSet){
+    	return this.decode(bitSet, 0);
+    }
+
+    /**
+     * decodes the next bit
+     */
+	public abstract char decode(BitSet bitSet,int position);
 }
 
