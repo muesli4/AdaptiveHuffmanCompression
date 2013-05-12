@@ -12,25 +12,45 @@ public class Main {
 			PipedOutputStream os = new PipedOutputStream();
 			is.connect(os);
 			
+			CountingInputStream cis = new CountingInputStream(is);
+			
 			EncoderOutputStream eos = new EncoderOutputStream(os);
-			DecoderInputStream eis = new DecoderInputStream(is);
+			DecoderInputStream eis = new DecoderInputStream(cis);
 
 			while (true) {
 			
-				int ch = System.in.read();
+				String input = "";
+				while (true) {
+					int ch = System.in.read();
 				
-				if (ch == -1) {
-					
-					break;
+					if (ch == -1) {
+						return;
+					}
+					else if (ch == '\n') {
+						break;
+					}
+					else {
+						input = input + (char) ch;
+					}
 				}
+				byte[] bytes = input.getBytes();
 				
-				eos.write(ch);
+				eos.write(bytes);
 				// flush to fill up byte
 				eos.flush();
-				System.out.print((char)eis.read());
 				
-				// drop current byte
+				for (int i = 0; i < bytes.length; ++i) {
+					System.out.print((char)eis.read());
+				}
+				
+				System.out.println("\nUsed " + cis.getCounter() + " bytes to encode the message, which is a compression rate of: "
+										     + (((double)cis.getCounter() / (double)bytes.length) * 100.0) + "%");
+				
+				// drop last byte
 				eis.dropCurrentByte();
+				
+				// reset counter
+				cis.resetCounter();
 			}
 
 		} catch (Exception e) {
