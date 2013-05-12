@@ -1,4 +1,5 @@
 import java.util.BitSet;
+import java.util.LinkedList;
 import java.io.IOException;
 
 public class Leaf extends PrefixTree {
@@ -32,6 +33,17 @@ public class Leaf extends PrefixTree {
 
 	public void update(char c) {
 	    // TODO
+	}
+	
+	public Tuple<BitSet, Integer> expandOrFinish(char c, BitSet b, int length, LinkedList<PrefixTree> openList, LinkedList<Tuple<BitSet, Integer>> openEncodingList) {
+
+		// we found our encoding
+		if (c == this.value) {
+			return new Tuple<BitSet, Integer>(b, length);
+		}
+		else {
+			return null;
+		}
 	}
 }
 

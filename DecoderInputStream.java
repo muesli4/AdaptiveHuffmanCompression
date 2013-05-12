@@ -17,7 +17,7 @@ public class DecoderInputStream extends InputStream {
     public DecoderInputStream(InputStream inputStream) {
     
         this.bitInputStream = new BitInputStream(inputStream);
-        // DEBUG
+//        this.prefixTree = new NYT(0, 513);
         this.prefixTree = new Node(null, 1, 511, new NYT(0, 513), new Leaf(null, 1, 512, 'a'));
 
 

@@ -1,4 +1,5 @@
 import java.util.BitSet;
+import java.util.LinkedList;
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -68,6 +69,22 @@ public class Node extends PrefixTree {
 	
 	public void update(char c) {
 	    // TODO
+	}
+	
+	public Tuple<BitSet, Integer> expandOrFinish(char c, BitSet b, int length, LinkedList<PrefixTree> openList, LinkedList<Tuple<BitSet, Integer>> openEncodingList) {
+		
+		openList.addFirst(rightNode);
+		
+		// add left later because it could by NYT, and we want to visit NYT last
+		openList.addFirst(leftNode);
+		
+		BitSet rightBitSet = (BitSet) b.clone();
+		rightBitSet.set(length);
+		
+		openEncodingList.add(new Tuple<BitSet, Integer>(rightBitSet, length + 1));
+		openEncodingList.add(new Tuple<BitSet, Integer>(b, length + 1));
+		
+		return null;
 	}
 }
 

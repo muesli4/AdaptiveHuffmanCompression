@@ -1,4 +1,5 @@
 import java.util.BitSet;
+import java.util.LinkedList;
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class NYT extends PrefixTree {
 	@Override
 	public Tuple<BitSet, Integer> encode(char c, BitSet bitSet, int length) {
 
-		// Adds the bits of the character to the bitSet
+		// add the bits of the character to the bitSet
 		for (int i = 0; i < 8; i++) {
 
 			bitSet.set(length + i, (c & (1 << i)) != 0);
@@ -50,6 +51,21 @@ public class NYT extends PrefixTree {
 	
 	public void update(char c) {
 	    // TODO
+	}
+	
+	public Tuple<BitSet, Integer> expandOrFinish(char c, BitSet b, int length, LinkedList<PrefixTree> openList, LinkedList<Tuple<BitSet, Integer>> openEncodingList) {
+
+		// always return a success because it is visited last
+		
+		BitSet NYTEncoding = (BitSet) b.clone();
+		
+		// add the bits of the character to the bitSet
+		for (int i = 0; i < 8; i++) {
+
+			NYTEncoding.set(length + i, (c & (1 << i)) != 0);
+		}
+		
+		return new Tuple<BitSet, Integer>(NYTEncoding, length);
 	}
 }
 
