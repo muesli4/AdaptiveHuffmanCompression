@@ -74,11 +74,12 @@ public class BitOutputStream extends OutputStream {
 
             byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
         }
-        
-        byteBufferPosition = 0;
-        
+
         outputStream.write(byteBuffer);
         outputStream.flush();
+        
+        byteBufferPosition = 0;
+        byteBuffer = 0;
     }
 }
 

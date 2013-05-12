@@ -56,5 +56,22 @@ public class BitInputStream extends InputStream {
             return byteBuffer & (1 << pos);
         }
     }
+    
+    /**
+     * 	Skip n bits.
+     */
+    @Override
+    public long skip(long n) throws IOException {
+		for (int i = 0; i < n; ++i) {
+			read();
+		}
+		
+		return n;
+    }
+    
+    public void dropCurrentByte() {
+    	byteBuffer = 0;
+    	byteBufferPosition = 8;
+    }
 }
 

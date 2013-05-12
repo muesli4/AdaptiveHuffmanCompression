@@ -19,7 +19,8 @@ public class EncoderOutputStream extends OutputStream {
     public EncoderOutputStream(OutputStream outputStream) {
     
         this.bitOutputStream = new BitOutputStream(outputStream);
-        this.prefixTree = new NYT(0, 513);
+//        this.prefixTree = new NYT(0, 513);
+        this.prefixTree = new Node(null, 1, 511, new NYT(0, 513), new Leaf(null, 1, 512, 'a'));
     }
     
 
@@ -30,6 +31,11 @@ public class EncoderOutputStream extends OutputStream {
         bitOutputStream.write(result.first, result.second);
 
         prefixTree.update(c);
+    }
+    
+    @Override
+    public void flush() throws IOException {
+    	bitOutputStream.flush();
     }
 }
 

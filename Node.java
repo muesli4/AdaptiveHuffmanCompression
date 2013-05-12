@@ -3,10 +3,11 @@ import java.io.EOFException;
 import java.io.IOException;
 
 public class Node extends PrefixTree {
-	private PrefixTree leftNode;
+
 	private PrefixTree rightNode;
-	
-	public Node(PrefixTree parent, int weight, int number, PrefixTree rightNode, PrefixTree leftNode) {
+	private PrefixTree leftNode;
+
+	public Node(PrefixTree parent, int weight, int number, PrefixTree leftNode, PrefixTree rightNode) {
 		super(parent, weight, number);
 		this.leftNode = leftNode;
 		this.rightNode = rightNode;
@@ -16,16 +17,27 @@ public class Node extends PrefixTree {
 	public Tuple<BitSet, Integer> encode(char ch, BitSet bitSet, int length) {
 		
 		// TODO implement with bfs maybe
-
+		
+		BitSet rightEncoding = (BitSet) bitSet.clone();
+		rightEncoding.set(length);
+		Tuple<BitSet, Integer> resultRight  = rightNode.encode(ch, rightEncoding, length + 1);
+		
 		Tuple<BitSet, Integer> resultLeft  = leftNode.encode(ch, (BitSet) bitSet.clone(), length + 1);
-		Tuple<BitSet, Integer> resultRight  = rightNode.encode(ch, (BitSet) bitSet.clone(), length + 1);
 
-		/*if (bitSetLeft == null && bitSetRight == null){
+
+		if (resultLeft == null && resultRight == null){
 			return null;
 		}
-		else */
+		else
 		// Returns the shorter bitSet - NYT-BitSet is always longer ( + 8 bits)
 		if (resultLeft == null) {
+			return resultRight;
+		}
+		else if (resultRight == null) {
+			return resultLeft;
+		}
+		// return shorter result (other may be NYT encoding)
+		else if (resultRight.second > resultLeft.second) {
 			return resultLeft;
 		}
 		else {
@@ -45,12 +57,12 @@ public class Node extends PrefixTree {
         // descend left
         else if (ch == 0) {
         
-            return rightNode.decode(bis);
+            return leftNode.decode(bis);
         }
         // right otherwise
         else {
             
-            return leftNode.decode(bis);
+            return rightNode.decode(bis);
         }
 	}
 	

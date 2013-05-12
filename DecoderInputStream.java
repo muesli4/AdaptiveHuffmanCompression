@@ -17,7 +17,10 @@ public class DecoderInputStream extends InputStream {
     public DecoderInputStream(InputStream inputStream) {
     
         this.bitInputStream = new BitInputStream(inputStream);
-        this.prefixTree = new NYT(0, 513);
+        // DEBUG
+        this.prefixTree = new Node(null, 1, 511, new NYT(0, 513), new Leaf(null, 1, 512, 'a'));
+
+
     }
 
     public int read() throws IOException {
@@ -27,6 +30,21 @@ public class DecoderInputStream extends InputStream {
         prefixTree.update(c);
         
         return c;
+    }
+    
+    /**
+     * Skip n bytes.
+     */
+    @Override
+    public long skip(long n) throws IOException {
+		// skip 8 * n bits from the bit stream
+    	bitInputStream.skip(n * 8);
+    	
+    	return n;
+    }
+    
+    public void dropCurrentByte() {
+    	this.bitInputStream.dropCurrentByte();
     }
 
 }

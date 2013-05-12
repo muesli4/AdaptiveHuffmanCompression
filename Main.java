@@ -25,7 +25,12 @@ public class Main {
 				}
 				
 				eos.write(ch);
+				// flush to fill up byte
+				eos.flush();
 				System.out.print((char)eis.read());
+				
+				// drop current byte
+				eis.dropCurrentByte();
 			}
 
 		} catch (Exception e) {
