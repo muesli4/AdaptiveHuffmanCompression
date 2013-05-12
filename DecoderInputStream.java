@@ -17,8 +17,7 @@ public class DecoderInputStream extends InputStream {
     public DecoderInputStream(InputStream inputStream) {
     
         this.bitInputStream = new BitInputStream(inputStream);
-        
-        // TODO receive the initial prefix tree from inputStream
+        this.prefixTree = new NYT(0, 513);
     }
 
     public int read() throws IOException {

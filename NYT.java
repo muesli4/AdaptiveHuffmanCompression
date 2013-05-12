@@ -16,7 +16,7 @@ public class NYT extends PrefixTree {
     }
     
 	@Override
-	public BitSet encode(char c, BitSet bitSet, int length) {
+	public Tuple<BitSet, Integer> encode(char c, BitSet bitSet, int length) {
 
 		// Adds the bits of the character to the bitSet
 		for (int i = 0; i < 8; i++) {
@@ -24,7 +24,7 @@ public class NYT extends PrefixTree {
 			bitSet.set(length + i, (c & (1 << i)) != 0);
 		}
 
-		return bitSet;
+		return new Tuple<BitSet, Integer>(bitSet, length + 8);
 	}
 
 	@Override

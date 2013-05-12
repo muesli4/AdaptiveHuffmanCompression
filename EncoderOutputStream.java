@@ -2,6 +2,7 @@
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.BitSet;
 
 public class EncoderOutputStream extends OutputStream {
 
@@ -18,14 +19,15 @@ public class EncoderOutputStream extends OutputStream {
     public EncoderOutputStream(OutputStream outputStream) {
     
         this.bitOutputStream = new BitOutputStream(outputStream);
+        this.prefixTree = new NYT(0, 513);
     }
     
 
     public void write(int b) throws IOException {
     
         char c = (char) b;
-
-        bitOutputStream.write(prefixTree.encode(c));
+        Tuple<BitSet, Integer> result = prefixTree.encode(c);
+        bitOutputStream.write(result.first, result.second);
 
         prefixTree.update(c);
     }

@@ -10,7 +10,7 @@ import java.util.BitSet;
 public class BitOutputStream extends OutputStream {
 
     // currently stored bits
-    byte byteBuffer;
+    byte byteBuffer = 0;
     
     // points on the first not used bit
     int byteBufferPosition = 0;
@@ -43,27 +43,23 @@ public class BitOutputStream extends OutputStream {
         
             byteBuffer = (byte)(byteBuffer | (1 << byteBufferPosition));
         }
-        else {
-        
-            byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
-        }
 
         byteBufferPosition = byteBufferPosition + 1;
         
         if (byteBufferPosition == 8) {
         
-            byteBufferPosition = 0;
-            
             outputStream.write(byteBuffer);
+            byteBufferPosition = 0;
+            byteBuffer = 0;
         }
     }
 
     /**
         Special method to write a Bitset to the stream.
     */
-    public void write(BitSet b) throws IOException {
+    public void write(BitSet b, int length) throws IOException {
 
-        for (int i = 0; i < b.size(); ++i) {
+        for (int i = 0; i < length; ++i) {
             
             this.write(b.get(i));
         }

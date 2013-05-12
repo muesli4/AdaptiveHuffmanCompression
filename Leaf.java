@@ -12,10 +12,10 @@ public class Leaf extends PrefixTree {
 	}
 
 	@Override
-	public BitSet encode(char ch, BitSet bitSet, int length) {
+	public Tuple<BitSet, Integer> encode(char ch, BitSet bitSet, int length) {
 		if (value == ch) {
 			// the leaf is the one we're looking for	
-			return bitSet;
+			return new Tuple<BitSet, Integer>(bitSet, length);
 		}
 		else {
 			// the leaf is not the one we're looking for

@@ -13,34 +13,25 @@ public class Node extends PrefixTree {
 	}
 
 	@Override
-	public BitSet encode(char ch, BitSet bitSet, int length) {
+	public Tuple<BitSet, Integer> encode(char ch, BitSet bitSet, int length) {
 		
 		// TODO implement with bfs maybe
-		
-		BitSet bitSetLeft = (BitSet) bitSet.clone();
-		BitSet bitSetRight = (BitSet) bitSet.clone();
 
-		bitSetLeft = leftNode.encode(ch, bitSetLeft, length + 1);
-		bitSetRight = rightNode.encode(ch, bitSetRight, length + 1);
+		Tuple<BitSet, Integer> resultLeft  = leftNode.encode(ch, (BitSet) bitSet.clone(), length + 1);
+		Tuple<BitSet, Integer> resultRight  = rightNode.encode(ch, (BitSet) bitSet.clone(), length + 1);
 
 		/*if (bitSetLeft == null && bitSetRight == null){
 			return null;
 		}
 		else */
 		// Returns the shorter bitSet - NYT-BitSet is always longer ( + 8 bits)
-		if (bitSetLeft == null) {
-			return bitSetRight;
-		}
-		else if (bitSetRight == null) {
-			return bitSetLeft;
-		}
-		// TODO there is always one null, otherwise the code would be ambiguous
-		else if (bitSetLeft.length() > bitSetRight.length()) {
-			return bitSetRight;
+		if (resultLeft == null) {
+			return resultLeft;
 		}
 		else {
-			return bitSetLeft;
+			return resultRight;
 		}
+
 	}
 
 	public char decode(BitInputStream bis) throws IOException {

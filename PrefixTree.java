@@ -44,7 +44,7 @@ public abstract class PrefixTree {
     /**
      * Encodes the character.
      */
-    public BitSet encode(char ch) {
+    public Tuple<BitSet, Integer> encode(char ch) {
 
     	return this.encode(ch, new BitSet(), 0);
     }
@@ -52,7 +52,7 @@ public abstract class PrefixTree {
     /**
      * Adds the next bit to the bitset.
      */
-	public abstract BitSet encode(char ch, BitSet bitSet, int length);
+	public abstract Tuple<BitSet, Integer> encode(char ch, BitSet bitSet, int length);
 
     /**
      * Decodes the next character.
