@@ -55,7 +55,7 @@ public class BitOutputStream extends OutputStream {
     }
 
     /**
-        Special method to write a Bitset to the stream.
+        Special method to write a BitSet to the stream.
     */
     public void write(BitSet b, int length) throws IOException {
 
@@ -66,20 +66,22 @@ public class BitOutputStream extends OutputStream {
     } 
 
     /**
-        Flushes the buffer, pads the byte with zeros for missing bits.
+        Flushes not sent bytes from the buffer, pads the byte with zeroes for missing bits.
     */
     public void flush() throws IOException {
 
-        for (;byteBufferPosition < 8; ++byteBufferPosition) {
-
-            byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
-        }
-
-        outputStream.write(byteBuffer);
-        outputStream.flush();
-        
-        byteBufferPosition = 0;
-        byteBuffer = 0;
+    	if (byteBufferPosition != 0) {
+	        for (;byteBufferPosition < 8; ++byteBufferPosition) {
+	
+	            byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
+	        }
+	
+	        outputStream.write(byteBuffer);
+	        outputStream.flush();
+	        
+	        byteBufferPosition = 0;
+	        byteBuffer = 0;
+    	}
     }
 }
 
