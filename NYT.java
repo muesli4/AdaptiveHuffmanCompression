@@ -1,4 +1,6 @@
 import java.util.BitSet;
+import java.io.EOFException;
+import java.io.IOException;
 
 
 public class NYT extends PrefixTree {
@@ -14,34 +16,40 @@ public class NYT extends PrefixTree {
     }
     
 	@Override
-	public BitSet encode(char ch, BitSet bitSet, int length) {
-		Byte b = (byte)ch;
-		
+	public BitSet encode(char c, BitSet bitSet, int length) {
+
 		// Adds the bits of the character to the bitSet
-		for (int x = 0; x < 8; x++){
-			bitSet.set(length + x, (b & (1 << x)) == (1 << x));
+		for (int i = 0; i < 8; i++) {
+
+			bitSet.set(length + i, (c & (1 << i)) != 0);
 		}
-		
-		// Sets the last bit so the length can be determined
-		bitSet.set(length + 9);
-		
+
 		return bitSet;
 	}
 
 	@Override
-	public char decode(BitSet bitSet, int position) {
-		byte ch = 0;
-		
-		// decodes the transmitted character
-		for (int x = 0; x < 8; x++){
-			if (bitSet.get(position + x)){
-				ch |= (1 << x);
-			}
-			else{
-				ch &= ~ (1 << x);
-			}
+	public char decode(BitInputStream bis) throws IOException {
+		char c = 0;
+
+		// reads the transmitted character bits
+		for (int i = 0; i < 8; i++) {
+
+            int ch = bis.read();
+            
+            if (ch == -1) {
+                throw new EOFException("couldn't receive not yet transmitted character");
+            }
+            else if (ch != 0) {
+            
+                c = (char)(c | (char)(1 << i));
+            }
 		}	
-		return (char)ch;
+
+		return  c;
+	}
+	
+	public void update(char c) {
+	    // TODO
 	}
 }
 

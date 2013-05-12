@@ -1,5 +1,5 @@
 import java.util.BitSet;
-
+import java.io.IOException;
 
 public class Leaf extends PrefixTree {
 
@@ -13,21 +13,25 @@ public class Leaf extends PrefixTree {
 
 	@Override
 	public BitSet encode(char ch, BitSet bitSet, int length) {
-		if(value == ch){
-			// the leaf is the one looking for	
+		if (value == ch) {
+			// the leaf is the one we're looking for	
 			return bitSet;
 		}
-		else{
-			// the leaf is not the one looking for
+		else {
+			// the leaf is not the one we're looking for
 			return null;
 		}
 			
 	}
 
 	@Override
-	public char decode(BitSet bitSet, int position) {
+	public char decode(BitInputStream bis) throws IOException {
+
 		return value;
 	}
 
+	public void update(char c) {
+	    // TODO
+	}
 }
 

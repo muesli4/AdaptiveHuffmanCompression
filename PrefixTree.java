@@ -1,4 +1,5 @@
 import java.util.BitSet;
+import java.io.IOException;
 
 
 public abstract class PrefixTree {
@@ -8,10 +9,10 @@ public abstract class PrefixTree {
 
     // weight of this tree (w)
     int weight;
-    
+
     // number of this tree (l)
     int number;
-    
+
     /**
         Constructor with parent.
     */
@@ -39,29 +40,28 @@ public abstract class PrefixTree {
     
         return parent == null;
     }
-    
+
     /**
-     * Encodes the character
+     * Encodes the character.
      */
-    public BitSet encode(char ch){
+    public BitSet encode(char ch) {
+
     	return this.encode(ch, new BitSet(), 0);
     }
 
     /**
-     * Adds the next bit to the bitset
+     * Adds the next bit to the bitset.
      */
 	public abstract BitSet encode(char ch, BitSet bitSet, int length);
-	
-    /**
-     * Decodes the character
-     */
-    public char decode(BitSet bitSet){
-    	return this.decode(bitSet, 0);
-    }
 
     /**
-     * decodes the next bit
+     * Decodes the next character.
      */
-	public abstract char decode(BitSet bitSet,int position);
+	public abstract char decode(BitInputStream bis) throws IOException;
+	
+	/**
+	 * Update the tree. TODO Probably returns a tree.
+	 */
+	public abstract void update(char c);
 }
 

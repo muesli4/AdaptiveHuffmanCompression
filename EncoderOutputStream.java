@@ -6,7 +6,7 @@ import java.io.IOException;
 public class EncoderOutputStream extends OutputStream {
 
     // the compressed output (including initial tree represenation) will be sent here
-    private OutputStream outputStream;
+    private BitOutputStream bitOutputStream;
 
     // the huffman tree used for encoding
     private PrefixTree prefixTree;
@@ -17,20 +17,17 @@ public class EncoderOutputStream extends OutputStream {
     */
     public EncoderOutputStream(OutputStream outputStream) {
     
-        this.outputStream = outputStream;
-        
-        // TODO load and send the first tree representation here
+        this.bitOutputStream = new BitOutputStream(outputStream);
     }
-    
     
 
     public void write(int b) throws IOException {
     
-        // TODO encode symbol to bit sequence
-        
-        // TODO send bit sequence with old encoding
-        
-        // TODO update tree
+        char c = (char) b;
+
+        bitOutputStream.write(prefixTree.encode(c));
+
+        prefixTree.update(c);
     }
 }
 

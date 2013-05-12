@@ -1,5 +1,6 @@
 import java.util.BitSet;
-
+import java.io.EOFException;
+import java.io.IOException;
 
 public class Node extends PrefixTree {
 	private PrefixTree leftNode;
@@ -14,45 +15,56 @@ public class Node extends PrefixTree {
 	@Override
 	public BitSet encode(char ch, BitSet bitSet, int length) {
 		
-		BitSet bitSetLeft = bitSet;
-		BitSet bitSetRight = bitSet;
-		bitSetLeft.set(length);
-		bitSetRight.set(length);
+		// TODO implement with bfs maybe
+		
+		BitSet bitSetLeft = (BitSet) bitSet.clone();
+		BitSet bitSetRight = (BitSet) bitSet.clone();
+
 		bitSetLeft = leftNode.encode(ch, bitSetLeft, length + 1);
 		bitSetRight = rightNode.encode(ch, bitSetRight, length + 1);
-		
+
 		/*if (bitSetLeft == null && bitSetRight == null){
 			return null;
 		}
 		else */
 		// Returns the shorter bitSet - NYT-BitSet is always longer ( + 8 bits)
-		if (bitSetLeft == null){
+		if (bitSetLeft == null) {
 			return bitSetRight;
 		}
-		else if (bitSetRight == null){
+		else if (bitSetRight == null) {
 			return bitSetLeft;
 		}
-		else if(bitSetLeft.length() > bitSetRight.length()){
+		// TODO there is always one null, otherwise the code would be ambiguous
+		else if (bitSetLeft.length() > bitSetRight.length()) {
 			return bitSetRight;
 		}
-		else{
+		else {
 			return bitSetLeft;
 		}
 	}
+
+	public char decode(BitInputStream bis) throws IOException {
+
+        int ch = bis.read();
+        
+        if (ch == -1) {
+        
+            throw new EOFException("incomplete encoding");
+        }
+        // descend left
+        else if (ch == 0) {
+        
+            return rightNode.decode(bis);
+        }
+        // right otherwise
+        else {
+            
+            return leftNode.decode(bis);
+        }
+	}
 	
-	public char decode(BitSet bitSet,int position){
-		if(bitSet.length() > position){
-			if(bitSet.get(position)){
-				return rightNode.decode(bitSet, position + 1);
-			}
-			else{
-				return leftNode.decode(bitSet, position + 1);
-			}
-		}
-		else{
-			// TODO: Throw not decodeable yet error
-			return '@';
-		}
+	public void update(char c) {
+	    // TODO
 	}
 }
 

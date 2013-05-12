@@ -23,21 +23,11 @@ public class DecoderInputStream extends InputStream {
 
     public int read() throws IOException {
         
-        int ch = this.bitInputStream.read();
+        char c = prefixTree.decode(bitInputStream);
         
-        if (ch == -1) {
+        prefixTree.update(c);
         
-            return -1;
-        }
-        else {
-
-            // TODO read until found a valid encoding and then decode to symbol
-        
-            // TODO update the tree with the symbol
-            
-            // TODO return decoded symbol
-            return -1;
-        }
+        return c;
     }
 
 }
