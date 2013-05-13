@@ -18,7 +18,7 @@ public class DecoderInputStream extends InputStream {
     
         this.bitInputStream = new BitInputStream(inputStream);
 //        this.prefixTree = new NYT(0, 513);
-        this.prefixTree = new Node(null, 1, 511, new NYT(0, 513), new Leaf(null, 1, 512, 'a'));
+        this.prefixTree = new PrefixTree();
 
 
     }
@@ -26,8 +26,6 @@ public class DecoderInputStream extends InputStream {
     public int read() throws IOException {
         
         char c = prefixTree.decode(bitInputStream);
-        
-        prefixTree.update(c);
         
         return c;
     }

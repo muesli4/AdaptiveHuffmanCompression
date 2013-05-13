@@ -42,7 +42,7 @@ public class Main {
 				for (int i = 0; i < bytes.length; ++i) {
 					System.out.print((char)eis.read());
 				}
-				
+
 				System.out.println("\nUsed " + cis.getCounter() + " bytes to encode the message, which is a compression rate of: "
 										     + (((double)cis.getCounter() / (double)bytes.length) * 100.0) + "%");
 				

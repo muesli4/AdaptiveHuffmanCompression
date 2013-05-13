@@ -20,17 +20,14 @@ public class EncoderOutputStream extends OutputStream {
     
         this.bitOutputStream = new BitOutputStream(outputStream);
 //        this.prefixTree = new NYT(0, 513);
-        this.prefixTree = new Node(null, 1, 511, new NYT(0, 513), new Leaf(null, 1, 512, 'a'));
+        this.prefixTree = new PrefixTree();
     }
     
 
     public void write(int b) throws IOException {
     
-        char c = (char) b;
-        Tuple<BitSet, Integer> result = prefixTree.encode(c);
-        bitOutputStream.write(result.first, result.second);
+    	this.prefixTree.encode((char) b, bitOutputStream);
 
-        prefixTree.update(c);
     }
     
     @Override
