@@ -94,10 +94,10 @@ public class Node {
     public void prettyPrint(int ident, boolean putLeft, TreeSet<Integer> verticalLines, String repr)
     {
 
-    	if (left != null)
+    	if (right != null)
 	        if (putLeft) {
 	            
-	            left.prettyPrint(ident + 1, true, verticalLines, repr + "0");
+	        	right.prettyPrint(ident + 1, true, verticalLines, repr + "0");
 	        }
 	        else {
 	            
@@ -105,7 +105,7 @@ public class Node {
 	
 	            leftVerticalLines.add(ident - 1);
 	            
-	            left.prettyPrint(ident + 1, true, leftVerticalLines, repr + "0");
+	            right.prettyPrint(ident + 1, true, leftVerticalLines, repr + "0");
 	        }
         
 
@@ -126,7 +126,7 @@ public class Node {
         
         System.out.println(number + "-" + weight + " " + (symbol != 0?symbol + " '" + repr + "'":""));
         
-        if (right != null)
+        if (left != null)
 	        if (putLeft) {
 	            
 	            TreeSet<Integer> rightVerticalLines = new TreeSet<Integer>(verticalLines);
@@ -134,10 +134,10 @@ public class Node {
 	            rightVerticalLines.addAll(verticalLines);
 	            rightVerticalLines.add(ident - 1);
 	            
-	            right.prettyPrint(ident + 1, false, rightVerticalLines, repr + "1");
+	            left.prettyPrint(ident + 1, false, rightVerticalLines, repr + "1");
 	        }
 	        else {
-	            right.prettyPrint(ident + 1, false, verticalLines, repr + "1");
+	        	left.prettyPrint(ident + 1, false, verticalLines, repr + "1");
 	        }
     }
 }

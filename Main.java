@@ -61,6 +61,11 @@ public class Main {
                     
                     continue;
                 }
+                // clear trees
+                else if (input.equals("reset")) {
+                    eos = new EncoderOutputStream(os);
+                    dis = new DecoderInputStream(cis);
+                }
                 else {
                     
                     byte[] bytes = input.getBytes();
