@@ -4,17 +4,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.io.DataOutputStream;
 
 public class Encoder {
 
 	public static void main(String[] args) {
-		
-		EncoderOutputStream eos;
-		OutputStream os = System.out;
-		InputStream is = System.in;
-		
+
 		try {
+			
+			OutputStream os = System.out;
+			InputStream is;
+			
 			if (args.length == 2) {
 			
 				os = new FileOutputStream(args[1]);
@@ -22,24 +22,35 @@ public class Encoder {
 			}
 			else if (args.length == 1) {
 				
-				is = new FileInputStream(args[0]);				
+				is = new FileInputStream(args[0]);
 			}
-
-			eos = new EncoderOutputStream(os);
-			
-			byte[] buffer = new byte[1024];
-			
-			while (true) {
-				int bytesRead = is.read(buffer);
+		    else {
 				
-				if (bytesRead == -1) {
-					break;
-				}
-				
-				eos.write(buffer, 0, bytesRead);
-			}
+				System.err.println("invalid number of arguments");
+				return;				
+		    }
 			
-			eos.flush();
+			// write size at the file beginning
+            {
+                DataOutputStream dos = new DataOutputStream(os);
+                dos.writeInt(is.available());
+            }
+            
+            EncoderOutputStream eos = new EncoderOutputStream(os);
+		
+		    byte[] buffer = new byte[1024];
+		
+		    while (true) {
+			    int bytesRead = is.read(buffer);
+			
+			    if (bytesRead == -1) {
+				    break;
+			    }
+			
+			    eos.write(buffer, 0, bytesRead);
+		    }
+		
+		    eos.flush();
 		}
 		catch(FileNotFoundException f) {
 

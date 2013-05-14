@@ -22,7 +22,7 @@ public class Main {
 			while (true) {
 			
 			    System.out.print(">> ");
-			
+
 				String input = "";
 				while (true) {
 					int ch = System.in.read();

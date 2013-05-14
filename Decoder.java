@@ -4,42 +4,62 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.io.DataInputStream;
 
 public class Decoder {
 
 	public static void main(String[] args) {
 		
-		DecoderInputStream dis;
-		OutputStream os = System.out;
-		InputStream is = System.in;
-		
 		try {
+
+			OutputStream os = System.out;
+			InputStream is = System.in;
+
 			if (args.length == 2) {
-			
+				
 				os = new FileOutputStream(args[1]);
 				is = new FileInputStream(args[0]);
 			}
 			else if (args.length == 1) {
-				
-				is = new FileInputStream(args[0]);				
+
+				is = new FileInputStream(args[0]);
+			}
+			else if (args.length > 2){
+				System.err.println("invalid number of arguments");
+				return;
 			}
 
+			DecoderInputStream dis;
+			
 			dis = new DecoderInputStream(is);
+
+            int amount;
+
+            // read byte count
+            {
+                DataInputStream datIs = new DataInputStream(is);
+                
+                amount = datIs.readInt();
+            }
+
+		    byte[] buffer = new byte[1024];
+		
+		    while (true) {
+
+			    int bytesRead = dis.read(buffer, 0, (amount >= 1024? 1024 : amount));
 			
-			byte[] buffer = new byte[1024];
+			    if (bytesRead == -1 || amount == 0) {
+				    break;
+			    }
+			    
+			    amount = amount - bytesRead;
 			
-			while (true) {
-				int bytesRead = dis.read(buffer);
-				
-				if (bytesRead == -1) {
-					break;
-				}
-				
-				os.write(buffer, 0, bytesRead);
-			}
-			
-			os.flush();
+			    os.write(buffer, 0, bytesRead);
+		    }
+		
+		    os.flush();
+
+
 		}
 		catch(FileNotFoundException f) {
 
