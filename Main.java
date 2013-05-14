@@ -7,6 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		try {
+
 			PipedInputStream is = new PipedInputStream();
 			PipedOutputStream os = new PipedOutputStream();
 			is.connect(os);
@@ -16,7 +17,11 @@ public class Main {
 			EncoderOutputStream eos = new EncoderOutputStream(os);
 			DecoderInputStream dis = new DecoderInputStream(cis);
 
+            System.out.println("Interactive mode started\n");
+
 			while (true) {
+			
+			    System.out.print(">> ");
 			
 				String input = "";
 				while (true) {
@@ -34,7 +39,7 @@ public class Main {
 				}
 				
 				// quit main loop
-				if (input.equals("quit")) {
+				if (input.equals("quit") || input.equals("exit")) {
 					return;
 				}
 				// print encoder
@@ -59,15 +64,18 @@ public class Main {
 					// flush to fill up byte
 					eos.flush();
 					
+					System.out.print("Source text was: \"");
 					for (int i = 0; i < bytes.length; ++i) {
 						System.out.print((char)dis.read());
 					}
-					System.out.println();
+					System.out.print("\"\n");
 					
 	
 					// print byte usage and compression rate
 					System.out.println("Used " + cis.getCounter() + " bytes to encode the message, which is a compression rate of: "
 											     + (((double)cis.getCounter() / (double)bytes.length) * 100.0) + "%");
+					System.out.println();
+					
 					
 					// drop last byte
 					dis.dropCurrentByte();
