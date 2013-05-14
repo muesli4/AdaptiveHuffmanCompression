@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
-public class Encoder {
+public class Decoder {
 
 	public static void main(String[] args) {
 		
-		EncoderOutputStream eos;
+		DecoderInputStream dis;
 		OutputStream os = System.out;
 		InputStream is = System.in;
 		
@@ -25,21 +25,21 @@ public class Encoder {
 				is = new FileInputStream(args[0]);				
 			}
 
-			eos = new EncoderOutputStream(os);
+			dis = new DecoderInputStream(is);
 			
 			byte[] buffer = new byte[1024];
 			
 			while (true) {
-				int bytesRead = is.read(buffer);
+				int bytesRead = dis.read(buffer);
 				
 				if (bytesRead == -1) {
 					break;
 				}
 				
-				eos.write(buffer, 0, bytesRead);
+				os.write(buffer, 0, bytesRead);
 			}
 			
-			eos.flush();
+			os.flush();
 		}
 		catch(FileNotFoundException f) {
 
