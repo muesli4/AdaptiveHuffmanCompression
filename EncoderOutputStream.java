@@ -20,16 +20,16 @@ public class EncoderOutputStream extends OutputStream {
     
     @Override
     public void write(int b) throws IOException {
-    	this.prefixTree.encode((char) b, bitOutputStream);
+        this.prefixTree.encode((char) b, bitOutputStream);
     }
     
     @Override
     public void flush() throws IOException {
-    	bitOutputStream.flush();
+        bitOutputStream.flush();
     }
     
     public void printPrefixTree() {
-    	this.prefixTree.print();
+        this.prefixTree.print();
     }
 }
 

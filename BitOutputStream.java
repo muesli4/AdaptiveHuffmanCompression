@@ -70,18 +70,18 @@ public class BitOutputStream extends OutputStream {
     */
     public void flush() throws IOException {
 
-    	if (byteBufferPosition != 0) {
-	        for (;byteBufferPosition < 8; ++byteBufferPosition) {
-	
-	            byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
-	        }
-	
-	        outputStream.write(byteBuffer);
-	        outputStream.flush();
-	        
-	        byteBufferPosition = 0;
-	        byteBuffer = 0;
-    	}
+        if (byteBufferPosition != 0) {
+            for (;byteBufferPosition < 8; ++byteBufferPosition) {
+    
+                byteBuffer = (byte)(byteBuffer & ~(1 << byteBufferPosition));
+            }
+    
+            outputStream.write(byteBuffer);
+            outputStream.flush();
+            
+            byteBufferPosition = 0;
+            byteBuffer = 0;
+        }
     }
 }
 

@@ -1,8 +1,7 @@
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.BitSet;
-
-// TODO outdeg = 0 or 2 ? always?
+import java.util.TreeSet;
 
 /**
  * 
@@ -30,18 +29,18 @@ public class PrefixTree {
      * Get some text representation of the tree.
      */
     public void print() {
-    	
-    	// print the root node recursively
-    	nodes[512].print(0);
+        
+        // print the root node recursively
+        nodes[512].prettyPrint(0, true, new TreeSet<Integer>(), "");  //print(0, "");
     }
     
     private int getMaxBlockIndex(int weight) {
         
         for (int i = 512; i >= currentNumber; --i) {
-        	
+            
             if (weight == nodes[i].weight) {
-            	// since we count down the numbers, the first value found is the one with the biggest number 
-            	return i;
+                // since we count down the numbers, the first value found is the one with the biggest number 
+                return i;
             }
         }
         
@@ -56,7 +55,7 @@ public class PrefixTree {
         // is p the NYT node?
         if (nodeNumber == currentNumber)
         {
-        	p.weight = 1;
+            p.weight = 1;
             currentNumber = currentNumber - 1;
 
             // put new symbol node right with weight 1
@@ -70,34 +69,34 @@ public class PrefixTree {
             nodes[currentNumber] = p.left;
 
             if (p.parent == null) {
-            	return;
+                return;
             }
             else {
-            	p = p.parent;
+                p = p.parent;
             }
         }
         
         // 
         while (p.parent != null) {
-        	
-        	// is not sibling to nyt
-        	if (p.parent != nodes[currentNumber].parent) {
-        		
-        		Node q = nodes[getMaxBlockIndex(p.weight)];
-        		
-        		// p is not the highest numbered node in this block
-        		if (q != p) {
+            
+            // is not sibling to nyt
+            if (p.parent != nodes[currentNumber].parent) {
+                
+                Node q = nodes[getMaxBlockIndex(p.weight)];
+                
+                // p is not the highest numbered node in this block
+                if (q != p) {
 
-        			// swap contents, and also set parents accordingly
-        			p.swapContents(q);
-        			
-        			// continue with q
-        			p = q;
-        		}
-        	}
-        	
-        	p.weight = p.weight + 1;
-        	p = p.parent;
+                    // swap contents, and also set parents accordingly
+                    p.swapContents(q);
+                    
+                    // continue with q
+                    p = q;
+                }
+            }
+            
+            p.weight = p.weight + 1;
+            p = p.parent;
         }
         
         // increase weight of root node
@@ -180,13 +179,13 @@ public class PrefixTree {
             int ch = bis.read();
             
             if (ch == -1) {
-            	// end of stream
-            	if (currentNode.number == 512) {
-            		return -1;
-            	}
-            	else {
-            		throw new EOFException("stream ended unexpected");
-            	}
+                // end of stream
+                if (currentNode.number == 512) {
+                    return -1;
+                }
+                else {
+                    throw new EOFException("stream ended unexpected");
+                }
             }
             else if (ch == 0) {
                 currentNode = currentNode.left;
@@ -203,8 +202,8 @@ public class PrefixTree {
             
             for (int i = 0; i < 8; ++i) {
             
-            	int ch = bis.read();
-            	
+                int ch = bis.read();
+                
                 if (ch == -1) {
                     throw new EOFException("missing data");
                 }
@@ -220,9 +219,9 @@ public class PrefixTree {
         // we found a leaf different from NYT
         else {
         
-        	// make sure we save our symbol before we update
-        	char c = currentNode.symbol;
-        	
+            // make sure we save our symbol before we update
+            char c = currentNode.symbol;
+            
             update(currentNode.number, currentNode.symbol);
         
             return c;

@@ -1,8 +1,10 @@
-
-import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
+/**
+ * Reads from a input stream and decodes it into single characters.
+ *
+ */
 public class DecoderInputStream extends InputStream {
 
     // the compressed input (including initial tree represenation) will be received here
@@ -29,18 +31,18 @@ public class DecoderInputStream extends InputStream {
      */
     @Override
     public long skip(long n) throws IOException {
-		// skip 8 * n bits from the bit stream
-    	bitInputStream.skip(n * 8);
-    	
-    	return n;
+        // skip 8 * n bits from the bit stream
+        bitInputStream.skip(n * 8);
+        
+        return n;
     }
     
     public void dropCurrentByte() {
-    	this.bitInputStream.dropCurrentByte();
+        this.bitInputStream.dropCurrentByte();
     }
 
     public void printPrefixTree() {
-    	this.prefixTree.print();
+        this.prefixTree.print();
     }
 }
 
