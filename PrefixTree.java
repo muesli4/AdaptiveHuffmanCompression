@@ -4,51 +4,71 @@ import java.util.BitSet;
 
 // TODO outdeg = 0 or 2 ? always?
 
+/**
+ * 
+ * A PrefixTree wrapper class, which provides basic operations for encoding, decoding, updating and printing.
+ * 
+ *
+ */
 public class PrefixTree {
 
-    
+    // the numbering source for nodes and NYT indicator
     private int currentNumber = 512;
+    
+    // for every node: nodes[node.number] == node
     private Node[] nodes = new Node[513];
 
+    /**
+     * Create new prefix tree with NYT as root node.
+     */
     public PrefixTree() {
 
         nodes[512] = new Node(null, 0, 512, (char)0);
     }
 
-    private int getHighestNodeWithWeight(int weight) {
+    /**
+     * Get some text representation of the tree.
+     */
+    public void print() {
+    	
+    	// print the root node recursively
+    	nodes[512].print(0);
+    }
+    
+    private int getMaxBlockIndex(int weight) {
         
-        for (int i = 512; nodes[i] != null && i >= 0; --i) {
-
+        for (int i = 512; i >= currentNumber; --i) {
+        	
             if (weight == nodes[i].weight) {
-                return i;
+            	// since we count down the numbers, the first value found is the one with the biggest number 
+            	return i;
             }
         }
         
-        // TODO error
+        // error: but we will never reach it when called correctly
         return -1;
     }
 
     private void update(int nodeNumber, char c) {
-    
+
         Node p = nodes[nodeNumber];
-    
-        // NYT
+
+        // is p the NYT node?
         if (nodeNumber == currentNumber)
         {
         	p.weight = 1;
             currentNumber = currentNumber - 1;
 
-            // new symbol node
+            // put new symbol node right with weight 1
             p.right = new Node(p, 1, currentNumber, c);
             nodes[currentNumber] = p.right;
             
             currentNumber = currentNumber - 1;
             
-            // new nyt node
+            // put new nyt node left with weight 0
             p.left = new Node(p, 0, currentNumber, (char)0);
             nodes[currentNumber] = p.left;
-            
-            // FIXME
+
             if (p.parent == null) {
             	return;
             }
@@ -59,16 +79,16 @@ public class PrefixTree {
         
         // 
         while (p.parent != null) {
-
+        	
         	// is not sibling to nyt
         	if (p.parent != nodes[currentNumber].parent) {
         		
-        		Node q = nodes[getHighestNodeWithWeight(p.weight)];
+        		Node q = nodes[getMaxBlockIndex(p.weight)];
         		
         		// p is not the highest numbered node in this block
         		if (q != p) {
 
-        			// swap
+        			// swap contents, and also set parents accordingly
         			p.swapContents(q);
         			
         			// continue with q
@@ -84,11 +104,17 @@ public class PrefixTree {
         p.weight = p.weight + 1;
     }
 
+    /**
+     * Encode a character and write it to the bit output stream.
+     * @param c The character to encode.
+     * @param bos The stream to write to.
+     * @throws IOException
+     */
     public void encode(char c, BitOutputStream bos) throws IOException {
 
         int nodeNumber = currentNumber;
 
-        for (int i = 512; nodes[i] != null && i >= 0; --i) {
+        for (int i = 512; i >= currentNumber; --i) {
 
             // found leaf with symbol
             if (c == nodes[i].symbol && nodes[i].left == null) {
@@ -123,7 +149,7 @@ public class PrefixTree {
             length = length + 1;
         }
         
-        // reverse encoding
+        // reverse the encoding
         BitSet encoding = new BitSet(length);
         
         for (int i = 0; i < length; ++i) {
@@ -133,21 +159,34 @@ public class PrefixTree {
         }
         
         update(nodeNumber, c);
-        
+                
         bos.write(encoding, length);
     }
 
-    public char decode(BitInputStream bis) throws IOException {
+    /**
+     * Decode a character from the bit input stream.
+     * @param bis The stream to read from.
+     * @return The decoded character.
+     * @throws IOException
+     */
+    public int decode(BitInputStream bis) throws IOException {
     
         // root node
         Node currentNode = nodes[512];
         
+        // while we haven't reached a leaf
         while (currentNode.left != null) {
         
             int ch = bis.read();
             
             if (ch == -1) {
-                throw new EOFException("missing data");
+            	// end of stream
+            	if (currentNode.number == 512) {
+            		return -1;
+            	}
+            	else {
+            		throw new EOFException("stream ended unexpected");
+            	}
             }
             else if (ch == 0) {
                 currentNode = currentNode.left;
@@ -157,7 +196,7 @@ public class PrefixTree {
             }
         }
         
-        // decode NYT character
+        // we found the node for NYT, decode the character
         if (currentNode.number == currentNumber) {
             
             char c = 0;
@@ -178,11 +217,15 @@ public class PrefixTree {
             
             return c;
         }
+        // we found a leaf different from NYT
         else {
         
+        	// make sure we save our symbol before we update
+        	char c = currentNode.symbol;
+        	
             update(currentNode.number, currentNode.symbol);
         
-            return currentNode.symbol;
+            return c;
         }
     }
 }

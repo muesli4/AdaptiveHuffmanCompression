@@ -1,4 +1,3 @@
-import java.io.BufferedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PipedInputStream;
 
@@ -15,7 +14,7 @@ public class Main {
 			CountingInputStream cis = new CountingInputStream(is);
 			
 			EncoderOutputStream eos = new EncoderOutputStream(os);
-			DecoderInputStream eis = new DecoderInputStream(cis);
+			DecoderInputStream dis = new DecoderInputStream(cis);
 
 			while (true) {
 			
@@ -33,27 +32,53 @@ public class Main {
 						input = input + (char) ch;
 					}
 				}
-				byte[] bytes = input.getBytes();
 				
-				eos.write(bytes);
-				// flush to fill up byte
-				eos.flush();
-				
-				for (int i = 0; i < bytes.length; ++i) {
-					System.out.print((char)eis.read());
+				// quit main loop
+				if (input.equals("quit")) {
+					return;
 				}
-
-				System.out.println("\nUsed " + cis.getCounter() + " bytes to encode the message, which is a compression rate of: "
-										     + (((double)cis.getCounter() / (double)bytes.length) * 100.0) + "%");
-				
-				// drop last byte
-				eis.dropCurrentByte();
-				
-				// reset counter
-				cis.resetCounter();
+				// print encoder
+				else if (input.equals("show encoder")) {
+					eos.printPrefixTree();
+					System.out.println();
+					
+					continue;
+				}
+				// print decoder
+				else if (input.equals("show decoder")) {
+					dis.printPrefixTree();
+					System.out.println();
+					
+					continue;
+				}
+				else {
+					
+					byte[] bytes = input.getBytes();
+					
+					eos.write(bytes);
+					// flush to fill up byte
+					eos.flush();
+					
+					for (int i = 0; i < bytes.length; ++i) {
+						System.out.print((char)dis.read());
+					}
+					System.out.println();
+					
+	
+					// print byte usage and compression rate
+					System.out.println("Used " + cis.getCounter() + " bytes to encode the message, which is a compression rate of: "
+											     + (((double)cis.getCounter() / (double)bytes.length) * 100.0) + "%");
+					
+					// drop last byte
+					dis.dropCurrentByte();
+					
+					// reset flow-through counter
+					cis.resetCounter();
+				}
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 
 			System.err.println("error: " + e.getLocalizedMessage());
 		}
