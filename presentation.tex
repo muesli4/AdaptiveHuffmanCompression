@@ -1,0 +1,243 @@
+\documentclass[utf8x]{beamer}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+
+\subject{Datenkompression}
+
+\title{Adaptive Huffman Komprimierung}
+
+\date{16. Mai 2013}
+
+\author{Niklas Jugl, Moritz Bruder}
+
+
+%\setbeamercovered{transparent}
+
+
+
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor%~~\beamer@ifempty{\insertshortinstitute}{}{(\insertshortinstitute)}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\setbeamertemplate{headline}
+{%
+  \leavevmode%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{section in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsectionhead\hfil}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex]{subsection in head/foot}%
+    \hbox to .5\paperwidth{\hfil\insertsubsectionhead\hfil}
+  \end{beamercolorbox}%
+}
+
+
+\begin{document}
+
+    \defverbatim\equalityCode{%
+        \begin{lstlisting}
+nodes[node.number] == node
+        \end{lstlisting}
+    }
+
+    \frame{
+
+        \titlepage
+    }
+
+    \frame{
+	    \frametitle{Inhaltsverzeichnis}
+	    \tableofcontents
+    }
+
+    %   - array als hilfsdatenstruktur für BFS
+    %       - iteration über die knoten im baum zuerst in die breite (da update die baumstruktur aufrecht erhält)
+    %       - da häufige zeichen oben im baum sind ist suche nach symbol im mittel effizient (zumindest wenn die häufigkeiten sich gut unterscheiden)
+    %           WICHTIG: kein (binärer) suchbaum
+    %       - für jeden knoten node gilt: nodes[node.number] == node
+
+    
+    \section{Array als Hilfsdatenstruktur für Breitensuche}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+    
+        \begin{block}{Überlegungen}
+            \begin{itemize}
+                \item
+                    Es handelt sich nicht um einen (binären) Suchbaum
+            
+                \item
+                    Suche von Knoten über die Breite ist effizienter, da häufige Knoten weiter oben sind
+                
+                \item
+                    Knotennummern steigen nach oben und rechts an
+                    
+            \end{itemize}
+        \end{block}
+    \end{frame}
+    \begin{frame}[<+->]
+
+        \begin{block}{Umsetzung}
+            \begin{itemize}
+                \item
+                    Deshalb gilt für jeden Knoten:
+                    \begin{quote}
+                        \equalityCode
+                    \end{quote}
+                \item
+                    Array wächst von oben herunter
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+
+    %   - bit ausgabe und eingabe
+    %       - buffere in einem byte und gebe dies dann an byte basierte streams weiter
+    %
+    
+    \section{Bitweise Ein- und Ausgabe}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+    
+        \begin{block}{Problem}
+            Addressierung findet auf Byteebene statt.
+
+        \end{block}
+        
+        \begin{block}{Lösung}
+            \begin{itemize}
+                \item
+                    1 Byte zwischenspeichern
+
+                \item
+                    Manipuliere mit Bitoperatoren zum Lesen und Schreiben
+
+            \end{itemize}
+        \end{block}
+    \end{frame}
+    %   - dekodieren
+    %       - baum absteigen
+    %           - links wenn 0 gelesen
+    %           - rechts sonst
+    %       - knoten = symbol? symbol ausgeben
+    %       - sonst ist knoten nyt, repräsentation für symbol empfangen
+    %
+    \section{Dekodieren}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+    
+        \begin{enumerate}[1.]
+            \item
+                Baum absteigen (links wenn 0 gelesen, rechts sonst)
+
+            \item
+                Knoten mit Symbol gefunden? Gebe Symbol aus
+            \item
+                Ansonsten empfange Symbol
+
+        \end{enumerate}
+
+    \end{frame}
+    %   - enkodieren
+    %       - suche im array nach zeichen
+    %           - wenn nicht gefunden dann nyt, hänge kodierung umgekehrt an
+    %           - wandere den baum hoch, prüfe ob vater diesen knoten als linkes kind hat
+    %               - hänge 0 an kodierung
+    %               - 1 sonst
+    %           - drehe die folge um
+    
+    \section{Enkodieren}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+    
+        \begin{enumerate}[1.]
+            \item
+                Lineare Suche nach Knoten mit Symbol im Array
+
+            \item
+                Wenn nicht gefunden, dann handelt es sich um NYT, hänge Symbol umgekehrt an
+            \item
+                Wandere den Baum hoch, wenn momentaner Knoten linkes Kind war hänge 0 an, sonst 1
+            \item
+                Drehe Kodierung um
+
+        \end{enumerate}
+
+    \end{frame}
+    %   - update
+    %       - nyt
+    %           - hänge nyt an neuen knoten links und neuen knoten für dekodiertes symbol rechts
+    %
+    %       - block konzept
+    %       - wandere den baum hoch, wenn knoten nicht geschwister von nyt und nicht maximale nummber im block hat
+    %           - tausche mit maximaler nummer im block (knoten steigt quasi in die nächste "gewichtsklasse" auf)
+    %           - erhöhe dann gewicht
+
+
+    \section{Baum aktualisieren}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+        Bereits in der Vorlesung besprochen.
+        \pause
+        \begin{block}{Blockprinzip}
+            Ein Block besteht aus allen Knoten mit gleichem Gewicht.
+        \end{block}
+        \pause
+        \begin{enumerate}[1.]
+            \item
+                Wird Knoten zu Symbol nicht gefunden hänge einen neuen ein
+            \item
+                Wandere den Baum nach oben und wenn der aktuelle Knoten nicht der mit der größten Nummer im Block ist, tausche diesen mit dem größten aus
+            \item
+                Erhöhe dann das Gewicht
+        \end{enumerate}
+    \end{frame}
+
+    \section{Sonstiges}
+    \frame{\tableofcontents[currentsection]}
+    \begin{frame}[<+->]
+    
+        \begin{itemize}
+            \item
+                Binaries
+
+            \item
+                Zu finden auf \href{https://github.com/muesli4/AdaptiveHuffmanCompression/tree/ugly}{github.com} unter \emph{AdaptiveHuffmanCompression}
+                
+            \item
+                Calgary corpus
+
+        \end{itemize}
+
+    \end{frame}
+    %   - binaries und git projekt
+    %       - Encoder
+    %       - Decoder
+    %       - Main
+    %       - Suche nach AdaptiveHuffmanCompression (momentan noch im ugly branch)
+    %
+    %   - ergebnis mit calgary corpus
+    %
+    
+\end{document}
